@@ -17,8 +17,12 @@ let do_benchs min_rec_sz max_rec_sz =
     ) in
   (mkbenchs benchs1, mkbenchs benchs2)
 
-let graph results1 results2 rec_sz =
+let graph ?out results1 results2 rec_sz =
   let gp = Gp.create () in
+  begin match out with
+    | None -> ()
+    | Some path -> Gp.set ~output:(Output.create (`Png path)) gp
+  end;
   let series title results = 
     Series.lines_xy ~title (List.mapi (fun i res ->
       (float_of_int @@ i+1,
@@ -31,8 +35,8 @@ let graph results1 results2 rec_sz =
   ];
   Gp.close gp
 
-let draw_graphs (res1, res2) =
+let draw_graphs ?out (res1, res2) =
   for i = 1 to Array.length res1 do
-    graph res1 res2 i
+    graph ?out res1 res2 i
   done
 
