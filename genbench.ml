@@ -21,7 +21,7 @@ let record_setn rec_sz n cout =
 
 let record_all_setn rec_sz cout =
   Printf.fprintf cout "(**** [r%d]: Functional update functions *)\n\n" rec_sz;
-  for i = 1 to rec_sz do
+  for i = 1 to rec_sz - 1 do
     if i > 1 then output_string cout "\n";
     record_setn rec_sz i cout;
   done
@@ -29,7 +29,7 @@ let record_all_setn rec_sz cout =
 let bench_all_setn rec_sz cout =
   Printf.fprintf cout "(**** Benchs for [r%d] *)\n\n" rec_sz;
   Printf.fprintf cout "let _ =\n benchs := [\n";
-  for i = 1 to rec_sz do
+  for i = 1 to rec_sz - 1 do
     Printf.fprintf cout "  (\"set%d_r%d\", fun () -> ignore (set%d_r%d r%d));\n"
       i rec_sz i rec_sz rec_sz;
   done;
@@ -49,7 +49,7 @@ let () =
 
   Printf.fprintf cout "let benchs = ref []\n\n";
   
-  for sz = 1 to max_rec_sz do
+  for sz = 2 to max_rec_sz do
     record_def sz cout;
     output_string cout "\n";
     record_all_setn sz cout;
@@ -58,4 +58,4 @@ let () =
     output_string cout "\n";
   done;
 
-  Printf.fprintf cout "let benchs = !benchs\n"
+  Printf.fprintf cout "let benchs = List.rev !benchs\n"
